@@ -28,6 +28,18 @@ int count = 0;
   #define ECHO_INSIDE 6
 #endif
 
+/* if using PIR SENSORS:
+ *  
+ */
+
+#ifndef PIR_OUTSIDE
+  #define PIR_OUTSIDE 7
+#endif
+
+#ifndef PIR_INSIDE
+  #define PIR_INSIDE 8
+#endif
+
 
 void setup() {
 
@@ -40,6 +52,12 @@ void setup() {
   pinMode(TRIGGER_INSIDE , OUTPUT);
   pinMode(ECHO_OUTSIDE , INPUT);
   pinMode(ECHO_INSIDE , INPUT);
+
+
+  //if using PIR sensors:
+
+  pinMode(PIR_INSIDE , INPUT);
+  pinMode(PIR_OUTSIDE , INPUT);
 
 }
 
@@ -64,7 +82,24 @@ float MeasureDistance(int ECHO_PIN , int TRIGGER_PIN)
 }
 
 void loop() {
-  
+
+  /*if using PIR sensors:
+   * 
+   */
+
+    if(digitalRead(PIR_OUTSIDE) == HIGH)
+    {
+      count = count + 1;
+    }
+
+    if(digitalRead(PIR_INSIDE == HIGH)
+    {
+      count = count - 1;
+    }
+
+  /* if using HCSR04 SENSORS:  
+   *  
+   */
   //If outside sensor detects a person coming in add 1 to count in room
   
   if(MeasureDistance(ECHO_OUTSIDE , TRIGGER_OUTSIDE) <=5)
@@ -79,8 +114,13 @@ void loop() {
     count = count - 1;
   }
 
-  //If count is 0 turn off all lights and fans
+  if(count < 0)
+  {
+    count = 0;
+  }
 
+  //If count is 0 turn off all lights and fans
+  
   if(count == 0)
   {
     digitalWrite(RELAY_LIGHT_PIN , LOW);
